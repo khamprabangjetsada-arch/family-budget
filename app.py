@@ -6,7 +6,7 @@ st.set_page_config(page_title="Family Budget", layout="wide")
 st.title("🏠 บันทึกรายรับ-รายจ่ายครอบครัว")
 
 conn = st.connection("gsheets", type=GSheetsConnection)
-df = conn.read(worksheet="Sheet1", ttl="0")
+df = conn.read(ttl="0")
 
 with st.sidebar:
     st.header("➕ เพิ่มรายการ")
