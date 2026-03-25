@@ -6,7 +6,7 @@ st.set_page_config(page_title="Family Budget", layout="wide")
 st.title("🏠 บันทึกรายรับ-รายจ่ายครอบครัว")
 
 conn = st.connection("gsheets", type=GSheetsConnection)
-df = conn.read(worksheet="ชีต1", ttl="0")
+df = conn.read(worksheet="Sheet1", ttl="0")
 
 with st.sidebar:
     st.header("➕ เพิ่มรายการ")
@@ -19,7 +19,7 @@ with st.sidebar:
         if name:
             new_row = pd.DataFrame([[str(date), name, kind, price]], columns=df.columns)
             updated_df = pd.concat([df, new_row], ignore_index=True)
-            conn.update(worksheet="ชีต1", data=updated_df)
+            conn.update(worksheet="Sheet1", data=updated_df)
             st.success("บันทึกสำเร็จ!")
             st.cache_data.clear()
             st.rerun()
