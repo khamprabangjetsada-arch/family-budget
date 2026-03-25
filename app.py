@@ -1,20 +1,18 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
-import json
 import altair as alt
 
 st.set_page_config(page_title="Family Budget Pro", layout="wide")
 st.title("🏠 บันทึกรายรับ-รายจ่ายครอบครัว (Pro Version)")
 
-# 1. เชื่อมต่อฐานข้อมูล
-creds = json.loads(st.secrets["my_secrets"]["json_key"])
-conn = st.connection("gsheets", type=GSheetsConnection, service_account_info=creds)
+# 1. เชื่อมต่อฐานข้อมูล (ใช้ระบบดึงกุญแจอัตโนมัติแบบที่เราตั้งไว้ล่าสุด)
+conn = st.connection("gsheets", type=GSheetsConnection)
 
 # 2. ดึงข้อมูลมาแสดงผล
 df = conn.read(worksheet="Sheet1", ttl="0")
 
-# เติมคอลัมน์ที่ว่างเพื่อป้องกัน Error
+# เติมคอลัมน์ที่ว่างเพื่อป้องกัน Error เวลาเพิ่มหัวข้อใหม่
 for col in ["วันที่", "รายการ", "หมวดหมู่", "ประเภท", "จำนวนเงิน", "หมายเหตุ"]:
     if col not in df.columns:
         df[col] = ""
