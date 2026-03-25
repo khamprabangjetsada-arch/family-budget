@@ -1,18 +1,14 @@
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import pandas as pd
-import json
 
 st.set_page_config(page_title="Family Budget", layout="wide")
 st.title("🏠 บันทึกรายรับ-รายจ่ายครอบครัว")
 
-# 1. อ่านกุญแจหุ่นยนต์จาก Secrets ที่เราซ่อนไว้
-creds = json.loads(st.secrets["my_secrets"]["json_key"])
+# เชื่อมต่อแบบมีกุญแจอัตโนมัติ (Streamlit จะดึงจาก Secrets เองเลย)
+conn = st.connection("gsheets", type=GSheetsConnection)
 
-# 2. เชื่อมต่อแบบมีกุญแจ (ทำให้แอปมีสิทธิ์เขียนข้อมูลได้!)
-conn = st.connection("gsheets", type=GSheetsConnection, service_account_info=creds)
-
-# 3. ดึงข้อมูลมาแสดงผล
+# ดึงข้อมูลมาแสดงผล
 df = conn.read(worksheet="Sheet1", ttl="0")
 
 with st.sidebar:
@@ -26,7 +22,6 @@ with st.sidebar:
         if name:
             new_row = pd.DataFrame([[str(date), name, kind, price]], columns=df.columns)
             updated_df = pd.concat([df, new_row], ignore_index=True)
-            # โค้ดบรรทัดนี้แหละที่ตอนนี้แอปเราทำได้แล้ว!
             conn.update(worksheet="Sheet1", data=updated_df)
             st.success("บันทึกสำเร็จ!")
             st.cache_data.clear()
